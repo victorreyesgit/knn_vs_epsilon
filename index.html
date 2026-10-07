@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+<title>Gaussian Density Explorer</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div id="canvas-container">
+  <canvas id="plot" width="640" height="640"></canvas>
+</div>
+
+<button id="panel-toggle" aria-label="Toggle controls">Controls</button>
+
+<div id="panel">
+  <div class="panel-header">
+    <h1>Gaussian Density Explorer</h1>
+    <p class="subtitle">A 2D normal <span class="mono">f(x,y) = N(μ, σₓ, σᵧ)</span> — density, samples, and probability-calibrated balls around a reference point</p>
+  </div>
+
+  <div class="section">
+    <h2>Capture</h2>
+    <button id="capture-photo" class="btn-secondary full">📷 Take Photo</button>
+    <button id="capture-video" class="btn-secondary full" style="margin-top:8px;">⏺ Record Video</button>
+  </div>
+
+  <div class="section">
+    <h2>Show / Hide</h2>
+
+    <h3 class="group-label">Distribution</h3>
+    <div class="check-grid">
+      <label class="check"><input type="checkbox" id="vis-heatmap" checked><span class="swatch" style="background:#5ec964"></span>Density heatmap</label>
+      <label class="check"><input type="checkbox" id="vis-points" checked><span class="swatch" style="background:#888c96"></span>Sample points</label>
+      <label class="check"><input type="checkbox" id="vis-ref" checked><span class="swatch" style="background:#ff4d4d"></span>Reference point c</label>
+    </div>
+
+    <h3 class="group-label">Geometry</h3>
+    <div class="check-grid">
+      <label class="check"><input type="checkbox" id="vis-eps"><span class="swatch" style="background:#ff8c2b"></span>ε ball</label>
+      <label class="check"><input type="checkbox" id="vis-eps-neigh"><span class="swatch" style="background:#ff8c2b"></span>ε-neighborhood</label>
+      <label class="check"><input type="checkbox" id="vis-closeness"><span class="swatch" style="background:#b980ff"></span>Closeness-ball</label>
+      <label class="check"><input type="checkbox" id="vis-knn"><span class="swatch" style="background:#b980ff"></span>k-NN points</label>
+    </div>
+
+    <h3 class="group-label">Spatial reference</h3>
+    <div class="check-grid">
+      <label class="check"><input type="checkbox" id="vis-origin" checked><span class="swatch" style="background:#0a0a0a; border:1px solid #555"></span>Origin (0,0)</label>
+      <label class="check"><input type="checkbox" id="vis-grid"><span class="swatch" style="background:#2b2f3a"></span>Grid</label>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Sampling</h2>
+    <div class="slider-row">
+      <label for="N">N points</label>
+      <input type="range" id="N" min="20" max="2000" step="10" value="300">
+      <output id="N-val"></output>
+    </div>
+    <button id="resample" class="btn-secondary full">Resample</button>
+  </div>
+
+  <div class="section">
+    <h2>Geometry parameters</h2>
+    <div class="slider-row">
+      <label for="k">k (neighbors)</label>
+      <input type="range" id="k" min="1" max="100" step="1" value="20">
+      <output id="k-val"></output>
+    </div>
+    <div class="slider-row">
+      <label for="eps">ε (epsilon ball)</label>
+      <input type="range" id="eps" min="0.05" max="4" step="0.02" value="1.0">
+      <output id="eps-val"></output>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Reference point c <span class="hint">(or click the plot)</span></h2>
+    <div class="slider-row">
+      <label for="cx">cₓ</label>
+      <input type="range" id="cx" min="-6" max="6" step="0.02" value="-1">
+      <output id="cx-val"></output>
+    </div>
+    <div class="slider-row">
+      <label for="cy">cᵧ</label>
+      <input type="range" id="cy" min="-6" max="6" step="0.02" value="-1">
+      <output id="cy-val"></output>
+    </div>
+    <button id="reset-point" class="btn-secondary">Reset to (-1, -1)</button>
+  </div>
+
+  <div class="section">
+    <h2>At c</h2>
+    <div class="readout" id="readout">—</div>
+  </div>
+
+  <div class="section legend">
+    <h2>Legend</h2>
+    <ul>
+      <li><span class="swatch" style="background:#5ec964"></span>Density heatmap — f(x,y), brighter = denser (gamma-boosted for visibility, not the probability math)</li>
+      <li><span class="swatch" style="background:#888c96"></span>Sample points — drawn i.i.d. from the Gaussian</li>
+      <li><span class="swatch" style="background:#ff4d4d"></span>Reference point c — movable</li>
+      <li><span class="swatch" style="background:#ff8c2b"></span>ε ball &amp; ε-neighborhood — plain Euclidean ball of radius ε, and the sample points inside it (same color)</li>
+      <li><span class="swatch" style="background:#b980ff"></span>Closeness-ball &amp; k-NN points — ball radius found numerically so P(ball) = (k+½)/N, and the k sample points closest to c (same color)</li>
+    </ul>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
